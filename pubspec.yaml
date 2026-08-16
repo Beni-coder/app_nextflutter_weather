@@ -1,7 +1,7 @@
 name: certif_weather_app
-description: "A new Flutter project."
+description: "Application météo Flutter connectée à l'API OpenWeatherMap, avec authentification JWT, cache local Hive et mode hors-ligne."
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.12.2
@@ -10,10 +10,29 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Réseau
+  dio: ^5.4.0
+
+  # Persistance locale
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.4
+
+  # Connectivité réseau
+  connectivity_plus: ^6.0.5
+
+  # Gestion d'état / injection de dépendances
+  provider: ^6.1.2
+
+  # Utilitaires
+  intl: ^0.20.2
+  crypto: ^3.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  mocktail: ^0.3.0
 
 flutter:
   uses-material-design: true

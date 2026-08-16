@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Clé API réelle (jamais commitée) : copier api_key.example.dart
+# en api_key.dart et renseigner votre clé.
+/lib/core/constants/api_key.dart
+*.env
