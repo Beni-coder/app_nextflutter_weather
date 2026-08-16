@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../token_provider.dart';
 
@@ -27,9 +28,18 @@ class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     options.queryParameters['APPID'] = _appId;
-    final token = await _tokenProvider.getAccessToken();
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
+
+    // OpenWeatherMap s'authentifie uniquement via le paramètre APPID.
+    // L'en-tête Authorization n'est donc pas requis par l'API et, sur le
+    // web, il transformerait la requête en requête "non simple" : le
+    // navigateur émettrait une pré-requête CORS (OPTIONS) qu'OpenWeatherMap
+    // ne traite pas, ce qui bloque l'appel. On ne l'injecte donc que sur
+    // les plateformes natives (mobile, desktop).
+    if (!kIsWeb) {
+      final token = await _tokenProvider.getAccessToken();
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+      }
     }
     handler.next(options);
   }

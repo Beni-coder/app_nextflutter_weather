@@ -94,6 +94,44 @@ void main() {
     },
   );
 
+  testWidgets(
+    'connexion réussie : champs vidés et message de bienvenue affiché',
+    (tester) async {
+      when(() => repository.login(
+            email: 'test@exemple.fr',
+            password: 'secret1',
+          )).thenAnswer(
+        (_) async => const AppUser(email: 'test@exemple.fr', name: 'Test'),
+      );
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider<AuthController>.value(
+          value: controller,
+          child: const MaterialApp(home: LoginScreen()),
+        ),
+      );
+
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'test@exemple.fr',
+      );
+      await tester.enterText(
+        find.byType(TextFormField).last,
+        'secret1',
+      );
+      await tester.tap(find.text('Se connecter'));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Connexion réussie. Bienvenue, Test !'),
+        findsOneWidget,
+      );
+      expect(find.text('test@exemple.fr'), findsNothing);
+      expect(find.text('secret1'), findsNothing);
+    },
+  );
+
   test(
     'login réussi : le contrôleur passe en état authentifié',
     () async {

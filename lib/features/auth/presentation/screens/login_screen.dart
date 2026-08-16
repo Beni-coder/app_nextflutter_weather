@@ -29,10 +29,29 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-    await context.read<AuthController>().login(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+
+    // Capturé avant l'attente asynchrone : le contexte pourrait être
+    // démonté après une connexion réussie (bascule vers l'accueil).
+    final messenger = ScaffoldMessenger.of(context);
+    final controller = context.read<AuthController>();
+    final success = await controller.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (success) {
+      // Réinitialise le formulaire et confirme la connexion à l'utilisateur.
+      _emailController.clear();
+      _passwordController.clear();
+      _formKey.currentState?.reset();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Connexion réussie. Bienvenue, ${controller.user?.name ?? ''} !',
+          ),
+        ),
+      );
+    }
   }
 
   @override

@@ -31,11 +31,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-    await context.read<AuthController>().register(
-          name: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+
+    // Capturé avant l'attente asynchrone : le contexte pourrait être
+    // démonté après une inscription réussie (bascule vers l'accueil).
+    final messenger = ScaffoldMessenger.of(context);
+    final controller = context.read<AuthController>();
+    final success = await controller.register(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (success) {
+      // Réinitialise le formulaire et confirme la création du compte.
+      _nameController.clear();
+      _emailController.clear();
+      _passwordController.clear();
+      _confirmController.clear();
+      _formKey.currentState?.reset();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Compte créé avec succès. Bienvenue, '
+            '${controller.user?.name ?? ''} !',
+          ),
+        ),
+      );
+    }
   }
 
   @override

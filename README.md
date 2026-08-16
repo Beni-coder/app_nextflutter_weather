@@ -121,6 +121,11 @@ lib/features/weather/
 - `AuthInterceptor` injecte la clé API (`APPID`) et l'en-tête
   `Authorization: Bearer <JWT>` sur chaque requête, puis, sur réponse 401,
   rafraîchit automatiquement les jetons et rejoue la requête une fois.
+  Sur le **web**, l'en-tête `Authorization` n'est pas envoyé : il rendrait
+  la requête « non simple » et déclencherait une pré-requête CORS
+  (OPTIONS) qu'OpenWeatherMap ne traite pas. L'API s'authentifiant
+  uniquement via `APPID`, l'en-tête est inutile dans tous les cas et
+  n'est injecté que sur les plateformes natives.
 - À l'ouverture de l'application, la session persistée est restaurée : si
   l'access token (30 min) est expiré, le refresh token (14 jours) est
   utilisé pour en obtenir un nouveau.
