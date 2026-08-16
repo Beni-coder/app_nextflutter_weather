@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'app.dart';
 import 'di/service_locator.dart';
@@ -7,6 +8,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    // Charge les données de formatage des dates pour le français
+    // (requis par DateFormat(..., 'fr_FR'), notamment sur le web).
+    await initializeDateFormatting('fr_FR');
     final dependencies = await ServiceLocator.initialize();
     runApp(MeteoApp(dependencies: dependencies));
   } on Object catch (error) {

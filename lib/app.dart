@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'di/service_locator.dart';
@@ -24,6 +25,16 @@ class MeteoApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Météo App',
         debugShowCheckedModeBanner: false,
+        locale: const Locale('fr'),
+        supportedLocales: const [
+          Locale('fr'),
+          Locale('en'),
+        ],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1565C0)),
